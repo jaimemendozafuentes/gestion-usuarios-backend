@@ -1,0 +1,3 @@
+{"email":"jaime@example.com","password":"Tuca2025!"}
+La contraseña NO es válida
+{"id":1,"password":"$2y$10$QE5rfpnA45CjFB4Du90YoOdYnwdVwkDMiNo9Xm.YqB509V\/vXJHUG"}

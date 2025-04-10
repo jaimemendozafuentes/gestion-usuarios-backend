@@ -1,0 +1,19 @@
+# Dependencias de PHP y Node.js
+/vendor/
+node_modules/
+
+# Archivos sensibles
+.env
+/config/config.php
+
+# Archivos generados y temporales
+/build/
+/dist/
+*.log
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos del editor
+/.vscode/
