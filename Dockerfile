@@ -12,3 +12,8 @@ EXPOSE 80
 
 # Configuración de Apache
 RUN a2enmod rewrite
+
+RUN echo "Options -Indexes" >> /etc/apache2/apache2.conf
+
+# Asegurarte de que Apache no intente servir directorios y solo manejará solicitudes de API
+RUN echo "DirectoryIndex disabled" >> /etc/apache2/apache2.conf
