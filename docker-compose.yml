@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  gestion-usuarios-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    container_name: gestion-usuarios-backend-gestion-usuarios-backend-1
+    depends_on:
+      - mysql-db
+    env_file:
+      - .env
+
+  mysql-db:
+    image: mysql:5.7
+    ports:
+      - "3307:3306"
+    container_name: gestion-usuarios-backend-mysql-db-1
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - MYSQL_DATABASE=${DB_NAME}  # Esto es opcional ya que db.sql crea la base
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql  # Carga tu script SQL
+
+volumes:
+  mysql-data:
