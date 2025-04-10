@@ -7,6 +7,9 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql
 # Copiar el archivo .env al contenedor
 COPY .env /var/www/html/.env
 
+# Copiar todo el proyecto al contenedor
+COPY . /var/www/html/
+
 # Exponer el puerto 80
 EXPOSE 80
 
