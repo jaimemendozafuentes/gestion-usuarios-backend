@@ -11,4 +11,5 @@ EXPOSE 80
 
 RUN a2enmod rewrite
 RUN echo "Options -Indexes" >> /etc/apache2/apache2.conf
-RUN echo "DirectoryIndex disabled" >> /etc/apache2/apache2.conf
+RUN echo "DirectoryIndex login.php update.php delete.php list.php register.php" >> /etc/apache2/apache2.conf
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
