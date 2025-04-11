@@ -2,9 +2,13 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+// Cargar el archivo .env solo si está presente (en desarrollo o local)
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+}
 
+// Comprobar si las variables de entorno necesarias están definidas
 $required = ['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'CORS_ORIGIN'];
 foreach ($required as $key) {
   if (!isset($_ENV[$key])) {
@@ -18,7 +22,7 @@ foreach ($required as $key) {
 error_log("Conectando a la base de datos...");
 
 try {
-  // Intentamos la conexión a la base de datos
+  // Intentamos la conexión a la base de datos usando las variables de entorno
   $pdo = new PDO(
     "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8mb4",
     $_ENV['DB_USER'],
