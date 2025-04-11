@@ -13,8 +13,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY . /var/www/html/
 
-COPY .env /var/www/html/.env
-
 
 # Instalar las dependencias de Composer
 RUN composer install --no-dev --optimize-autoloader
