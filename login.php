@@ -12,9 +12,6 @@ use Firebase\JWT\Key;
 // ✅ Entrada JSON
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Debug temporal para ver qué llega al backend
-file_put_contents('debug.log', print_r($data, true));
-
 // ✅ Validación simple
 if (empty($data['email']) || empty($data['password'])) {
   http_response_code(400);
@@ -30,6 +27,14 @@ $stmt = $pdo->prepare("SELECT id, email, password FROM users WHERE email = ?");
 $stmt->execute([$email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// ✅ LOG: guardar lo recibido y resultado de password_verify()
+file_put_contents("debug.log", json_encode([
+  'email_recibido' => $email,
+  'password_recibido' => $password,
+  'hash_en_bd' => $user['password'] ?? 'NO USER FOUND',
+  'verifica' => isset($user['password']) ? password_verify($password, $user['password']) : 'NO PASSWORD TO VERIFY'
+], JSON_PRETTY_PRINT) . "\n", FILE_APPEND);
+
 // ✅ Verificar credenciales
 if (!$user || !password_verify($password, $user['password'])) {
   http_response_code(401);
@@ -37,12 +42,9 @@ if (!$user || !password_verify($password, $user['password'])) {
   exit;
 }
 
-// ✅ Verificar si el hash necesita ser rehash
+// ✅ Rehash si es necesario
 if (password_needs_rehash($user['password'], PASSWORD_DEFAULT)) {
-  // Generar un nuevo hash de la contraseña
   $newHash = password_hash($password, PASSWORD_DEFAULT);
-  
-  // Actualizar la contraseña en la base de datos
   $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
   $stmt->execute([$newHash, $user['id']]);
 }
