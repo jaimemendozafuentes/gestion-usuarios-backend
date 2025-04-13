@@ -12,6 +12,9 @@ use Firebase\JWT\Key;
 // ✅ Entrada JSON
 $data = json_decode(file_get_contents('php://input'), true);
 
+// Debug temporal para ver qué llega al backend
+file_put_contents('debug.log', print_r($data, true));
+
 // ✅ Validación simple
 if (empty($data['email']) || empty($data['password'])) {
   http_response_code(400);
