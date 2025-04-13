@@ -9,7 +9,7 @@ if (file_exists(__DIR__ . '/../.env')) {
 }
 
 // Comprobar si las variables de entorno necesarias están definidas
-$required = ['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'CORS_ORIGIN'];
+$required = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASS', 'CORS_ORIGIN'];
 foreach ($required as $key) {
   if (!isset($_ENV[$key])) {
     http_response_code(500);
@@ -24,7 +24,7 @@ error_log("Conectando a la base de datos...");
 try {
   // Intentamos la conexión a la base de datos usando las variables de entorno
   $pdo = new PDO(
-    "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8mb4",
+    "mysql:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_NAME']};charset=utf8mb4",
     $_ENV['DB_USER'],
     $_ENV['DB_PASS']
   );
