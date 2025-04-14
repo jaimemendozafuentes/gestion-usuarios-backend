@@ -16,3 +16,4 @@ Thumbs.db
 
 # Archivos del editor
 /.vscode/
+.github/workflows/fly-deploy.yml
