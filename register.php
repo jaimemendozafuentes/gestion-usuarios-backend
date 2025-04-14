@@ -48,20 +48,18 @@ if ($stmt->fetch()) {
   exit;
 }
 
-// ✅ Crear usuario
-$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-$stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
-
-// LOG: prueba de ejecución
-$success = $stmt->execute([$email, $hashedPassword]);
-
-if ($success) {
+// ✅ Crear usuario con manejo de errores
+try {
+  $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+  $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
+  $stmt->execute([$email, $hashedPassword]);
   $userId = $pdo->lastInsertId();
+
   file_put_contents('registro.log', "✅ Usuario insertado: $email con ID $userId\n", FILE_APPEND);
-} else {
-  file_put_contents('registro.log', "❌ FALLO al insertar: $email\n", FILE_APPEND);
+} catch (PDOException $e) {
+  file_put_contents('registro.log', "❌ FALLO al insertar: $email - " . $e->getMessage() . "\n", FILE_APPEND);
   http_response_code(500);
-  echo json_encode(['error' => 'No se pudo registrar el usuario']);
+  echo json_encode(['error' => 'Error al registrar el usuario.']);
   exit;
 }
 
@@ -80,5 +78,5 @@ echo json_encode([
   'success' => true,
   'message' => 'Usuario registrado correctamente',
   'token' => $token,
-  'user_id' => $userId // opcional: útil para debug
+  'user_id' => $userId
 ]);
