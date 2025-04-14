@@ -1,6 +1,5 @@
 <?php
-$allowedOrigins = explode(',', getenv('ALLOWED_ORIGINS') ?: ($_ENV['ALLOWED_ORIGINS'] ?? ''));
-
+$allowedOrigins = array_map('trim', explode(',', $_ENV['ALLOWED_ORIGINS'] ?? ''));
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
 error_log("🌐 Origin recibido: $origin");
