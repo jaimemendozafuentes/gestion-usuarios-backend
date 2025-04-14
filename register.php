@@ -63,6 +63,7 @@ try {
   exit;
 }
 
+
 // ✅ Generar token JWT
 $payload = [
   'sub' => $userId,
