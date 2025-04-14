@@ -32,6 +32,11 @@ try {
 
   // Log si la conexión es exitosa
   error_log("Conexión a la base de datos exitosa.");
+
+  // 📦 Registrar nombre de la base de datos conectada
+  $dbNameUsed = $pdo->query("SELECT DATABASE()")->fetchColumn();
+  file_put_contents(__DIR__ . '/../registro.log', "📦 Base de datos usada: $dbNameUsed\n", FILE_APPEND);
+
 } catch (PDOException $e) {
   // Log si hay un error de conexión
   error_log("Error de conexión a la base de datos: " . $e->getMessage());
