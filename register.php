@@ -9,7 +9,6 @@ use Firebase\JWT\JWT;
 // ✅ Recibir datos JSON
 $data = json_decode(file_get_contents('php://input'), true);
 
-// ✅ Validación básica
 if (!isset($data['email'], $data['password'])) {
   http_response_code(400);
   echo json_encode(['error' => 'Email y contraseña son obligatorios']);
@@ -29,8 +28,8 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 // ✅ Validación de contraseña segura
 if (
   strlen($password) < 8 ||
-  !preg_match('/[A-Z]/', $password) ||      // al menos una mayúscula
-  !preg_match('/[\W]/', $password)          // al menos un símbolo
+  !preg_match('/[A-Z]/', $password) ||
+  !preg_match('/[\W]/', $password)
 ) {
   http_response_code(400);
   echo json_encode([
@@ -52,8 +51,19 @@ if ($stmt->fetch()) {
 // ✅ Crear usuario
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
-$stmt->execute([$email, $hashedPassword]);
-$userId = $pdo->lastInsertId();
+
+// LOG: prueba de ejecución
+$success = $stmt->execute([$email, $hashedPassword]);
+
+if ($success) {
+  $userId = $pdo->lastInsertId();
+  file_put_contents('registro.log', "✅ Usuario insertado: $email con ID $userId\n", FILE_APPEND);
+} else {
+  file_put_contents('registro.log', "❌ FALLO al insertar: $email\n", FILE_APPEND);
+  http_response_code(500);
+  echo json_encode(['error' => 'No se pudo registrar el usuario']);
+  exit;
+}
 
 // ✅ Generar token JWT
 $payload = [
@@ -69,5 +79,6 @@ $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
 echo json_encode([
   'success' => true,
   'message' => 'Usuario registrado correctamente',
-  'token' => $token
+  'token' => $token,
+  'user_id' => $userId // opcional: útil para debug
 ]);
